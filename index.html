@@ -1,0 +1,30 @@
+<html>
+
+<head>
+	<script src="./assets/bonsaijs.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+	<div id="curvesArea">
+		<script>
+			var q = document.getElementById("curvesArea");
+			var x = q.offsetWidth;
+			var y = q.offsetHeigth;
+
+			var options = {
+				url: 'script.js',
+				width: x,
+				heigth: y			
+			}
+
+			var bonsai = bonsai.run(document.getElementById("curvesArea"), options);
+
+			
+		</script>
+	</div>
+</body>
+
+
+</html>
