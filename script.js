@@ -9,7 +9,7 @@ var paths = [];
 var j = 0;
 var draw = false;
 var bezierCurves = [];
-var evaluation = 30;
+var evaluation = 100;
 var tEvaluation = 50;
 var cBezierCurves = [];
 var sb = 5;
@@ -37,21 +37,20 @@ bezierCurves.push(new Path().stroke('pink', S_STROKE).addTo(stage));
 bezierCurves.push(new Path().stroke('purple', S_STROKE).addTo(stage));
 
 function drawSegment(point){
-	ctrlCurves.forEach(function(points, i){
+		ctrlCurves.forEach(function(points, i){
       if(points.includes(point.id)) {
         if(paths[i].segments().length === 0) paths[i].moveTo(x, y);
         else paths[i].lineTo(x, y);
       }
   });
 }
-
 function drawBezierC(i){
 	if (i) i = 1;
 	else i = 0;
 
 	if(paths[i].segments().length < 2) return;
 	var points = paths[i].segments();
-	
+
 	bezierCurves[i].segments(Array(0));
 
 	var x = 0;
@@ -104,13 +103,46 @@ stage.on('click', function(clickEvent){
 			});
 		});
 
-		drawSegment(point);
 
+
+		point.on('doubleclick', function(dragEvent){
+
+			var target = this.id;
+			ctrlCurves.forEach(function(points, i){
+				if(points.includes(target)){
+					if(i == 0) turn = false;
+					else turn = true;
+
+					var index = points.indexOf(target);
+					if (index > -1) {
+    				points.splice(index, 1);
+					}
+
+					console.log(ctrlCurves);
+				}
+
+
+
+			});
+
+			stage.children().forEach(function(child){
+				if(child.id == target) {
+					stage.removeChild(child);
+
+				}
+			});
+		});
+
+		drawSegment(point);
 		drawBezierC(turn);
+
 		if (!turn) degree.curve1++;
 		else degree.curve2++;
 		console.log(degree);
-		turn = !turn;
+
+		var diff = degree.curve1 - degree.curve2;
+		if(diff <= 1 && diff >= -1) turn = !turn;
+
 	}
 
 
