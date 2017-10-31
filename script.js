@@ -5,18 +5,17 @@ var target;
 var point;
 var ctrlCurves = [[],[]];
 var curveCounter = 0;
-var pointCounter = 0;
 var paths = [];
 var j = 0;
 var draw = false;
 var bezierCurves = [];
-var evaluation = 300;
+var evaluation = 30;
 var tEvaluation = 50;
 var cBezierCurves = [];
 var sb = 5;
 var degree = {
-	curve1: 0,
-	curve2: 0
+	curve1: -1,
+	curve2: -1
 }
 
 /*
@@ -34,7 +33,8 @@ var turn = false;
 */
 paths.push(new Path().stroke('red', S_STROKE).addTo(stage));
 paths.push(new Path().stroke('blue', S_STROKE).addTo(stage));
-
+bezierCurves.push(new Path().stroke('pink', S_STROKE).addTo(stage));
+bezierCurves.push(new Path().stroke('purple', S_STROKE).addTo(stage));
 
 function drawSegment(point){
 	ctrlCurves.forEach(function(points, i){
@@ -46,14 +46,34 @@ function drawSegment(point){
 }
 
 function drawBezierC(i){
-	var n, x, y;
-	if(paths[i].segments().length() <2) return;
+	if (i) i = 1;
+	else i = 0;
 
+	if(paths[i].segments().length < 2) return;
+	var points = paths[i].segments();
+	
 	bezierCurves[i].segments(Array(0));
 
+	var x = 0;
+	var y = 0;
 
+	bezierCurves[i].moveTo(points[0][1], points[0][2]);
+
+ 	for(t = 1/evaluation; t < 1 ; t += 1/evaluation, x = 0, y = 0){
+		for(p = 1; p < points.length; p++){
+			for(c = 0; c < points.length -p ; c++){
+					points[c][1] = (1 - t) * points[c][1] + t * points[c + 1][1];
+					points[c][2] = (1 - t) * points[c][2] + t * points[c + 1][2];
+			}
+		}
+		x = points[0][1];
+		y = points[0][2];
+
+		bezierCurves[i].lineTo(x,y);
+	}
+
+	bezierCurves[i].lineTo(points[i][1], points[i][2]);
 }
-
 
 stage.on('click', function(clickEvent){
 
@@ -65,8 +85,6 @@ stage.on('click', function(clickEvent){
 		y = clickEvent.y;
 
 		point = new Circle(x,y, P_RADIUS).fill(P_COLOR).addTo(stage);
-		pointCounter++;
-
 		if(!turn) ctrlCurves[0].push(point.id);
 		else ctrlCurves[1].push(point.id);
 
@@ -81,16 +99,21 @@ stage.on('click', function(clickEvent){
 					segments[points.indexOf(point_id)][1] = aux.attr("x");
 					segments[points.indexOf(point_id)][2] = aux.attr("y");
 					paths[i].segments(segments);
+					drawBezierC(i);
 				}
 			});
 		});
 
 		drawSegment(point);
+
+		drawBezierC(turn);
 		if (!turn) degree.curve1++;
 		else degree.curve2++;
 		console.log(degree);
 		turn = !turn;
 	}
+
+
 });
 
 stage.on('message:draw', function(data) {
