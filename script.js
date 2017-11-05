@@ -205,6 +205,7 @@ stage.on('message:getEval', function(data){
 });
 
 // Gets when the button was pressed to draw tBezierCurves
+
 stage.on('message:draw', function(data) {
   draw = true;
   stage.sendMessage('draw', {bool: draw});
@@ -256,4 +257,5 @@ stage.on('message:hideElement', function(data){
       }
     });
   }
+
 });
