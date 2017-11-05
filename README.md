@@ -4,7 +4,7 @@
                                   Sob a o auxilio do monitor Henrique Caúla (hcaula)
                             
 
-   O problema proposto foi de criar um programa que realizasse Interpolação Linear de Curvas de Bézier num outra de mesmo grau
+   O problema proposto foi de criar um programa que realizasse **Interpolação Linear de Curvas de Bézier num outra de mesmo grau**(2.13)
 
   A ideia inicial é que o grau de cada curva seria arbritario, desde que fosse o mesmo para ambas e que pudesse visualizar cada curva
 gerada pela interpolação.
