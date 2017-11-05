@@ -1,29 +1,145 @@
 <html>
+  <head>
+    <title> Projeto P2-13 </title>
+    <script src="./assets/bonsai.min.js"></script>
+    <link rel="shortcut icon" type="image/png" href="./assets/mush.png"/>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./assets/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
 
-<head>
-	<script src="./assets/bonsaijs.min.js"></script>
-	<link rel="stylesheet" href="style.css">
-</head>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
 
+    <div class="container-fluid">
+      <div class="title">
+        <h3> Interpolação Linear de Curva de Bézier numa Outra de Mesmo Grau </h3>
+      </div>
+    </div>
 
-<body>
-	<div id="curvesArea">
-		<script>
-			var q = document.getElementById("curvesArea");
-			var x = q.offsetWidth;
-			var y = q.offsetHeigth;
+    <div class="container-fluid">
+      <div class="valueM" id="valueM">
+        <div class="item">
+          
 
-			var options = {
-				url: 'script.js',
-				width: x,
-				heigth: y			
-			}
+          <div>
+          <label>Grau das curvas</label>
+          <input class="text" id="degree" type="number" disabled oninput="sendEval()">
+          </div>
 
-			var bonsai = bonsai.run(document.getElementById("curvesArea"), options);
-			
-		</script>
-	</div>
-</body>
+          <div>
+            <label id="labelAval">Aval. Curvas originais:</label>
+            <input class="text" id="eval" type="number" oninput="sendEval()">
+          </div>
 
+          <div>
+          <label id="labelAvalT">Aval Curvas T:</label>
+          <input class="text" id="tEval" type="number" oninput="sendEval()">
+          </div>
+
+          <div id="labelP">
+          <label >Parâmetro das curvas:</label>
+          <input oninput="change_t()" type="range" id="t" value="20" min="1" max="300">
+          </div>
+
+          <label  id="tValue"></label>
+
+          <script>
+            document.getElementById("tValue").innerHTML = 'Disabled';
+            function change_t(){
+              var x = document.getElementById("t").value;
+              document.getElementById("tValue").innerHTML = x;
+              sendEval();
+            }
+          </script>
+
+        </div>
+
+        <div class = subMenu>
+          <div class="view">
+            <p>Exibir</p>
+
+            <label class="checkbox-inline">
+              <input class="check" onchange="checkbox('points')" type="checkbox" id="points" checked>Pontos de controle
+            </label>
+            
+            <label class="checkbox-inline">
+              <input  class="check" onchange="checkbox('segments')" type="checkbox" id="segments" checked>Segmentos
+            </label>
+            
+            <label class="checkbox-inline">
+              <input  class="check" onchange="checkbox('curves')" type="checkbox" id="curves" checked>Curvas originais
+            </label>
+            
+            <label class="checkbox-inline">
+              <input  class="check" onchange="checkbox('tCurves')" type="checkbox" id="tCurves" checked>T-Curvas
+            </label>
+          
+          </div>
+
+          <button onclick="drawCurves()" id="btnDraw" class="btn" disabled>Desenhar curvas T</button>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="stage">
+      <script>
+        document.getElementById('t').disabled = true;
+        var b = document.getElementById("stage"),
+            x = b.offsetWidth,
+            y = b.offsetHeight;
+        var options = {
+          url: 'script.js',
+          width: x,
+          height: y
+        }
+        var movie = bonsai.run(document.getElementById('stage'), options);
+        var sendEval = function() {
+
+          var degree = document.getElementById("degree").value;
+          var eval = document.getElementById("eval").value;
+          var tEval = document.getElementById("tEval").value;
+          var t = document.getElementById("t").value;
+
+          if(eval > 0){
+            document.getElementById("eval").style.backgroundColor = '#fff';
+            movie.sendMessage("getEval", {eval: eval, tEval: tEval, t: t, degree, degree});
+          } else {
+            document.getElementById("eval").style.backgroundColor = 'red';
+          }
+        }
+        var drawCurves = function() {
+          var t = document.getElementById("t").value;
+          movie.sendMessage("draw", {t: t});
+        }
+        var checkbox = function(id) {
+          var check = document.getElementById(id).checked;
+          movie.sendMessage('hideElement', {id: id, boxChecked: check});
+        }
+        movie.on("message:backValue", function(data){
+          document.getElementById('eval').value = data.eval;
+          document.getElementById('tEval').value = data.tEvaluations;
+          document.getElementById('degree').value = data.degree;
+        });
+        movie.on("message:draw", function(data){
+          if(!data.bool) document.getElementById('tCurves').disabled = true;
+          else document.getElementById('tCurves').disabled = false;
+          document.getElementById('tCurves').checked = true;
+        });
+        movie.on("message:enableDrawButton", function(){
+          var x = document.getElementById("t").value;
+          document.getElementById("tValue").innerHTML = x;
+          document.getElementById('t').disabled = false;
+          document.getElementById('btnDraw').disabled = false;
+         
+        });
+        
+        
+      </script>
+    </div>
+
+    
+  </body>
 
 </html>
