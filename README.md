@@ -1,5 +1,7 @@
-# projetoPG
+# ProjetoPG
                             Projeto desenvolvido para cadeira de Processamento Gráfico - IF680
+                                  Desenvolvido por: Igor Poncell e Thiago Casa Nova
+                                  Sob a o auxilio do monitor Henrique Caúla (hcaula)
                             
 
    O problema proposto foi de criar um programa que realizasse Interpolação Linear de Curvas de Bézier num outra de mesmo grau
@@ -14,4 +16,6 @@ não foi possivel implementar o projeto vai funcionar dessa forma) em seguida o 
 O usuário pode alterar o valor do menu de parametros e as alterações acontecerão em **tempo real**.
 
 O usuário também pode clicar nos checkbox da area **"exibir"** onde através da comunicação criada com auxilio da *bonsai.js* os pontos, segmentos, curvas e curvas T serão escondidos.
+
+Não conseguimos implementar o delete pois o mesmo causava instabilidade na aplicação.
 
