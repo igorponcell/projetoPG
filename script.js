@@ -155,6 +155,39 @@ stage.on('click', function(clickEvent) {
       countPoints++;
   }
 
+    point.on('doubleclick', function(dragEvent){
+      var owner_num, num_of_points;
+      var point_clicked = this.id;
+
+      allCPoints.forEach(function(points, i){
+        if(points.includes(point_clicked)){
+          owner_num = i;
+          countPoints -= points.length;
+          stage.removeChild(paths[i]);
+          stage.removeChild(bezierCurves[i]);
+          stage.children().forEach(function(ch){
+            if(points.includes(ch.id)){
+              stage.removeChild(ch);
+            }
+          });
+        }
+      });
+
+      for(i = owner_num; i < 2; i++){
+          if(i==0){
+          allCPoints[i] = [];
+          paths[i] = new Path().stroke(pathColors[i], P_STROKE).addTo(stage);
+          bezierCurves[i] = new Path().stroke(B_COLOR, B_STROKE).addTo(stage);
+          }
+          else{
+          allCPoints[i] = [];
+          paths[i] = new Path().stroke(pathColors[i], P_STROKE).addTo(stage);
+          bezierCurves[i] = new Path().stroke(B_COLOR, B_STROKE).addTo(stage);
+          }
+      }
+     
+    });
+
     point.on('drag', function(dragEvent){
       this.attr({"x": dragEvent.x, "y": dragEvent.y});
       point_id = this.id;
