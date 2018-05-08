@@ -1,6 +1,6 @@
 
 const P_COLOR = 'yellow';
-const P_RADIUS = 4;
+const P_RADIUS = 5;
 const P_STROKE = 1;
 const B_STROKE = 2;
 const T_B_COLOR = 'purple';
@@ -30,7 +30,7 @@ for(i = 0; i < 2; i++){
 
 function generateCBezierCurve(){
   for(i = 0; i <= sb; i++){
-    if(draw) cBezierCurves.push(new Path().stroke('cyan', T_B_STROKE).addTo(stage));
+    if(draw) cBezierCurves.push(new Path().stroke('#2fac66', T_B_STROKE).addTo(stage));
     else cBezierCurves.push(new Path().stroke(invisible, T_B_STROKE).addTo(stage));
   }
 }
@@ -69,6 +69,9 @@ function drawTCurve(){
   var count = 0;
   var controlPoints = [];
   var aux = paths[1].segments();
+
+  console.log(paths[0].segments());
+  console.log(paths[1].segments());
   for (q = 0; q < 1.001; q += 1/sb) {
     
     var tpoints = [];
@@ -162,6 +165,7 @@ stage.on('click', function(clickEvent) {
       allCPoints.forEach(function(points, i){
         if(points.includes(point_clicked)){
           owner_num = i;
+          console.log(owner_num);
           countPoints -= points.length;
           stage.removeChild(paths[i]);
           stage.removeChild(bezierCurves[i]);
@@ -172,20 +176,20 @@ stage.on('click', function(clickEvent) {
           });
         }
       });
-
+      removeCurves();
       for(i = owner_num; i < 2; i++){
-          if(i==0){
+        if(i < 1) {
+          allCPoints[i] = allCPoints[i + 1];
+          paths[i] = paths[i+1];
+          paths[i].stroke(pathColors[i], P_STROKE);
+          bezierCurves[i] = bezierCurves[i + 1];
+        } else{
           allCPoints[i] = [];
           paths[i] = new Path().stroke(pathColors[i], P_STROKE).addTo(stage);
           bezierCurves[i] = new Path().stroke(B_COLOR, B_STROKE).addTo(stage);
-          }
-          else{
-          allCPoints[i] = [];
-          paths[i] = new Path().stroke(pathColors[i], P_STROKE).addTo(stage);
-          bezierCurves[i] = new Path().stroke(B_COLOR, B_STROKE).addTo(stage);
-          }
+        }
+
       }
-     
     });
 
     point.on('drag', function(dragEvent){
@@ -286,7 +290,7 @@ stage.on('message:hideElement', function(data){
       }
       else {
         draw = true;
-        el.stroke('cyan', stroke).addTo(stage);
+        el.stroke('#2fac66', stroke).addTo(stage);
       }
     });
   }
